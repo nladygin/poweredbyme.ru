@@ -9,9 +9,11 @@
 #include <SoftwareServo.h>
 
 // SETTINGS
-#define STEERING_MIN 30   // 0..90, 90 - center
-#define STEERING_MAX 150  // 90..180, 90 - center
+#define STEERING_MIN 0    // 0..90, 90 - center
+#define STEERING_MAX 180  // 90..180, 90 - center
 #define IS_REVERSE_STEERING true
+#define STEERING_SMOOTH 5 // 1..n, n - more smooth
+#define ENGINE_SMOOTH 5   // 1..n, n - more smooth 
 
 #define RX_PIN PIN_PB3
 #define TX_PIN PIN_PB4
@@ -45,10 +47,10 @@ void loop() {
     byte incomingByte = swSerial.read();
     //swSerial.println(incomingByte);
     if (incomingByte >= 0 && incomingByte <= 99) {           // steering
-      steeringCmd = incomingByte;
+      steeringCmd = steeringCmd + ((incomingByte - steeringCmd) / STEERING_SMOOTH);
     }
     else if (incomingByte >= 100 && incomingByte <= 199) {   // engine
-      engineCmd = incomingByte - 100;
+      engineCmd = engineCmd + (((incomingByte - 100) - engineCmd) / ENGINE_SMOOTH);
     }
     else if (incomingByte >= 210 && incomingByte <= 211) {   // light
       lightCmd = incomingByte - 210;
