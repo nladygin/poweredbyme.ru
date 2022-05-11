@@ -9,8 +9,8 @@
 #include <SoftwareServo.h>
 
 // SETTINGS
-#define STEERING_MIN 0    // 0..90, 90 - center
-#define STEERING_MAX 180  // 90..180, 90 - center
+#define STEERING_MIN 30   // 0..90, 90 - center
+#define STEERING_MAX 150  // 90..180, 90 - center
 #define IS_REVERSE_STEERING true
 #define STEERING_SMOOTH 5 // 1..n, n - more smooth
 #define ENGINE_SMOOTH 5   // 1..n, n - more smooth 
