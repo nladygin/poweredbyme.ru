@@ -9,11 +9,12 @@
 #include <SoftwareServo.h>
 
 // SETTINGS
-#define STEERING_MIN 30   // 0..90, 90 - center
-#define STEERING_MAX 150  // 90..180, 90 - center
 #define IS_REVERSE_STEERING true
-#define STEERING_SMOOTH 5 // 1..n, n - more smooth
-#define ENGINE_SMOOTH 5   // 1..n, n - more smooth 
+#define STEERING_MIN 30    // 0..90, 90 - center
+#define STEERING_MAX 150   // 90..180, 90 - center
+#define ENGINE_MAX 150     // 0..255
+#define STEERING_SMOOTH 3  // 1..n, n - more smooth
+#define ENGINE_SMOOTH 10   // 1..n, n - more smooth 
 
 #define RX_PIN PIN_PB3
 #define TX_PIN PIN_PB4
@@ -28,6 +29,7 @@ byte steeringCmd = 50;
 byte engineCmd = 50;
 byte lightCmd = 0;
 int failSafe = 0;
+
 
 
 void setup() {
@@ -71,11 +73,11 @@ void updateActuators(byte steeringValue, byte engineValue, byte lightValue) {
   delay(20);
   steeringServo.refresh();
   if (engineValue > 53) {
-    analogWrite(ENGINE_PIN_FWD, map(engineValue, 52, 99, 10, 255));
+    analogWrite(ENGINE_PIN_FWD, map(engineValue, 53, 99, 10, ENGINE_MAX));
     analogWrite(ENGINE_PIN_BWD, 0);
   } else  if (engineValue < 48) {
     analogWrite(ENGINE_PIN_FWD, 0);
-    analogWrite(ENGINE_PIN_BWD, map(engineValue, 48, 0, 10, 255));
+    analogWrite(ENGINE_PIN_BWD, map(engineValue, 47, 0, 10, ENGINE_MAX));
   } else {
     analogWrite(ENGINE_PIN_FWD, 0);
     analogWrite(ENGINE_PIN_BWD, 0);
