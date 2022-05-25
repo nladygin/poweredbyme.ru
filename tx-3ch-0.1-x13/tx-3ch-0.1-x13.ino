@@ -18,6 +18,7 @@
 
 button swtch(SWITCH_PIN);
 bool switchState = false;
+bool isDrivePacket = true;
 
 
 void setup() {
@@ -36,11 +37,16 @@ void loop() {
   static uint32_t tmr = 0;
   if (millis() - tmr > 60) {
     tmr = millis();
-    byte buf[3];
-    buf[0] = map(analogRead(STEERING_PIN), 0, 1023, 0, 99);
-    buf[1] = map(analogRead(ENGINE_PIN), 0, 1023, 100, 199);
-    buf[2] = switchState ? 211 : 210;
+    byte buf[2];
+    if (isDrivePacket) {
+      buf[0] = map(analogRead(STEERING_PIN), 0, 1023, 0, 99);
+      buf[1] = map(analogRead(ENGINE_PIN), 0, 1023, 100, 199);
+    } else {
+      buf[0] = switchState ? 211 : 210;
+      buf[1] = 255;
+    }
     Serial.write(buf, sizeof(buf));
+    isDrivePacket = !isDrivePacket;
     //Serial.print(buf[0]); Serial.print(" - "); Serial.print(buf[1]); Serial.print(" - "); Serial.println(buf[2]);
   }
 }
