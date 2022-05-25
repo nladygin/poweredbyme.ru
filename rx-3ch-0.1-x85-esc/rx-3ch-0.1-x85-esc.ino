@@ -59,6 +59,7 @@ void loop() {
     }
     updateActuators(steeringCmd, engineCmd, lightCmd);
     failSafe = 0;
+    //swSerial.print(steeringCmd); swSerial.print(" | "); swSerial.print(engineCmd); swSerial.print(" | "); swSerial.println(lightCmd);
   } else {
     if (failSafe > 10000) {
       updateActuators(50, 50, 0);
