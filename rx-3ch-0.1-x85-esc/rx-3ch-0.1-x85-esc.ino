@@ -9,12 +9,12 @@
 #include <SoftwareServo.h>
 
 // SETTINGS
-#define IS_REVERSE_STEERING true
+#define IS_REVERSE_STEERING false
 #define STEERING_MIN 30    // 0..90, 90 - center
 #define STEERING_MAX 150   // 90..180, 90 - center
-#define ENGINE_MAX 150     // 0..255
-#define STEERING_SMOOTH 3  // 1..n, n - more smooth
-#define ENGINE_SMOOTH 10   // 1..n, n - more smooth 
+#define ENGINE_MAX 255     // 0..255
+#define STEERING_SMOOTH 1  // 1..n, n - more smooth
+#define ENGINE_SMOOTH 2    // 1..n, n - more smooth 
 
 #define RX_PIN PIN_PB3
 #define TX_PIN PIN_PB4
