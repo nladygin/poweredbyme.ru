@@ -24,6 +24,7 @@
 #include <ESP8266WiFi.h>
 
 #include <RemoteXY.h>
+#include <Servo.h>
 
 // RemoteXY connection settings 
 #define REMOTEXY_WIFI_SSID "poweredbyme"
@@ -59,29 +60,42 @@ struct {
 /////////////////////////////////////////////
 
 // SETTINGS
+#define STEERING_RANGE 5         // 10 - max, 1 - min
+#define IS_STEERING_REVERS false
+
+
 #define PIN_SWITCH 2
 #define ENGINE_PIN_FWD 13
 #define ENGINE_PIN_BWD 15
+#define SERVO_STEERING_PIN 12
 
+int SERVO_STEERING_CENTER = 1550;
+Servo servo_steering;
 
 void setup() {
   RemoteXY_Init (); 
   pinMode(ENGINE_PIN_FWD, OUTPUT);
   pinMode(ENGINE_PIN_BWD, OUTPUT);
   pinMode(PIN_SWITCH, OUTPUT);
+  servo_steering.attach(SERVO_STEERING_PIN);
 }
 
 void loop() { 
   RemoteXY_Handler ();
   if (RemoteXY.connect_flag == 1) {
+    updateSteering(RemoteXY.joystick_x);
     updateEngine(RemoteXY.joystick_y);
-
     updateSwitch(RemoteXY.switch_on_off);
   } else {
+    updateSteering(0);
     updateEngine(0);
-
     updateSwitch(0);
   }
+}
+
+void updateSteering(int8_t steering_value) {
+  steering_value = (IS_STEERING_REVERS) ? -1*steering_value : steering_value;
+  servo_steering.writeMicroseconds(SERVO_STEERING_CENTER + steering_value*STEERING_RANGE);
 }
 
 void updateEngine(int8_t engine_value) {
