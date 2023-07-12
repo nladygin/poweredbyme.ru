@@ -62,15 +62,25 @@ struct {
 // SETTINGS
 #define STEERING_RANGE 5         // 10 - max, 1 - min
 #define IS_STEERING_REVERS false
+#define SLIDER1_RANGE 10         // 10 - max, 1 - min
+#define IS_SLIDER1_REVERS false
+#define SLIDER2_RANGE 10         // 10 - max, 1 - min
+#define IS_SLIDER2_REVERS false
 
 
 #define PIN_SWITCH 2
 #define ENGINE_PIN_FWD 13
 #define ENGINE_PIN_BWD 15
 #define SERVO_STEERING_PIN 12
+#define SERVO_SLIDER1_PIN 14
+#define SERVO_SLIDER2_PIN 16
 
 int SERVO_STEERING_CENTER = 1550;
+int SERVO_SLIDER1_START = 500;
+int SERVO_SLIDER2_START = 500;
 Servo servo_steering;
+Servo servo_slider1;
+Servo servo_slider2;
 
 void setup() {
   RemoteXY_Init (); 
@@ -78,6 +88,8 @@ void setup() {
   pinMode(ENGINE_PIN_BWD, OUTPUT);
   pinMode(PIN_SWITCH, OUTPUT);
   servo_steering.attach(SERVO_STEERING_PIN);
+  servo_slider1.attach(SERVO_SLIDER1_PIN);
+  servo_slider2.attach(SERVO_SLIDER2_PIN);
 }
 
 void loop() { 
@@ -85,10 +97,14 @@ void loop() {
   if (RemoteXY.connect_flag == 1) {
     updateSteering(RemoteXY.joystick_x);
     updateEngine(RemoteXY.joystick_y);
+    updateSlider1(RemoteXY.slider_1);
+    updateSlider2(RemoteXY.slider_2);
     updateSwitch(RemoteXY.switch_on_off);
   } else {
     updateSteering(0);
     updateEngine(0);
+    updateSlider1(0);
+    updateSlider2(0);
     updateSwitch(0);
   }
 }
@@ -110,6 +126,16 @@ void updateEngine(int8_t engine_value) {
     analogWrite(ENGINE_PIN_FWD, 0);
     analogWrite(ENGINE_PIN_BWD, 0);
   }
+}
+
+void updateSlider1(int8_t slider_value) {
+  slider_value = (IS_SLIDER1_REVERS) ? -1*slider_value : slider_value;
+  servo_slider1.writeMicroseconds(SERVO_SLIDER1_START + 2*slider_value*SLIDER1_RANGE);
+}
+
+void updateSlider2(int8_t slider_value) {
+  slider_value = (IS_SLIDER2_REVERS) ? -1*slider_value : slider_value;
+  servo_slider2.writeMicroseconds(SERVO_SLIDER2_START + 2*slider_value*SLIDER2_RANGE);
 }
 
 void updateSwitch(uint8_t switch_value) {
